@@ -1,5 +1,6 @@
 var request = require('request')
   , async = require('async')
+  , port = 22828
 
 function nullFn() {}
 
@@ -13,11 +14,11 @@ var nullLogger = {
 }
 
 function getServer() {
-  return require('../express-server').createServer({
-    logger: nullLogger,
-    port: 22828,
-    yonder:  require('../lib/yonder').createYonder()
-  })
+  return require('../express-server').createServer(
+    { logger: nullLogger
+    , port: port
+    , yonder:  require('../lib/yonder').createYonder()
+    })
 }
 
 describe('server', function() {
@@ -34,7 +35,7 @@ describe('server', function() {
         return i === 5
       }, function(callback) {
         i++
-        request('http://localhost:4031/', function (error, response) {
+        request('http://localhost:' + port, function (error, response) {
           response.statusCode.should.equal(200)
           paths.push(response.request.path)
           callback()
